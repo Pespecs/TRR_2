@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int inf = 10000;
+int n, s;
+ifstream f1("CK.INP");
+ofstream f2("CK.OUT");
+int c[101][101];
+bool visited[101];
+
+int main() {
+    f1 >> n >> s;
+    vector<int> v;
+    vector<int> T;
+    for(int i = 1; i <= n; i++) {
+        if(i != s) v.push_back(i);
+        for(int j = 1; j <= n; j++) {
+            f1 >> c[i][j];
+        }
+    }
+    int dH = 0;
+    T.push_back(s);
+    vector<pair<pair<int, int>, int>> ans;
+    visited[s] = true;
+    while(!v.empty()) {
+        int a, b, mindist = inf;
+        for(auto i : T) {
+            for(auto j : v) {
+                if(mindist > c[i][j] && i != j) {
+                    a = i;
+                    b = j;
+                    mindist = c[i][j];
+                }
+            }
+        }
+        if(mindist == inf) break;
+        ans.push_back({{a, b}, mindist});
+        dH += mindist;
+        T.push_back(b);
+        auto it = find(v.begin(), v.end(), b);
+        v.erase(it);
+
+    }
+    if(ans.size() != n - 1) {
+        f2 << 0 << endl;
+        return 0;
+    }
+    f2 << dH << endl;
+    for(auto x : ans) {
+        int a = min(x.first.first, x.first.second);
+        int b = max(x.first.first, x.first.second);
+        f2 << a << " " << b << " " << x.second << endl;
+    }
+
+    return 0;
+}
