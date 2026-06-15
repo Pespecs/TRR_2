@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+bool visited[1001];
+vector<int> adj[1001];
+vector<int> ans;
+int n, u;
+ifstream f1("CT.INP");
+ofstream f2("CT.OUT");
+bool found = false;
+int cnt = 0;
+
+void hmt(int k) {
+    if(ans.size() == n) {
+        for(auto x : adj[k]) {
+            if(x == u) {
+                cnt++;
+                found = true;
+                for(auto i : ans) f2 << i << " ";
+                f2 << u << endl;
+                return;
+            }
+        }
+        return;
+    }
+    visited[k] = true;
+    for(auto v : adj[k]) {
+        if(!visited[v]) {
+            visited[v] = true;
+            ans.push_back(v);
+            hmt(v);
+            visited[v] = false;
+            ans.pop_back();
+        }
+    }
+}
+
+
+int main() {
+    f1 >> n >> u;
+    for(int i = 0; i < n; i++)
+        for(int j = 0; j < n; j++) {
+            int x;
+            f1 >> x;
+            if(x == 1) adj[i + 1].push_back(j + 1);
+        }
+        ans.push_back(u);
+        hmt(u);
+        if(!found) f2 << 0 << endl;
+        else f2 << cnt << endl;
+    return 0;
+}
