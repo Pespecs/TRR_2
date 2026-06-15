@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n;
+ifstream f1("CK.INP");
+ofstream f2("CK.OUT");
+vector<int> adj[101];
+int a[101][101];
+vector<bool> visited(101, false);
+vector<pair<int, int>> ans;
+
+void dfstree(int u) {
+    visited[u] = true;
+    for(auto v : adj[u]) {
+        if(!visited[v]) {
+            ans.push_back({u, v});
+            dfstree(v);
+        }
+    }
+}
+
+void bfstree(int u) {
+    queue<int> q;
+    q.push(u);
+    visited[u] = true;
+    while(!q.empty()) {
+        int v = q.front(); q.pop();
+        for(auto i : adj[v]) {
+            if(!visited[i]) {
+                q.push(i);
+                visited[i] = true;
+                ans.push_back({v, i});
+            }
+        }
+    }
+}
+
+int main() {
+    int u, t;
+    f1 >> t >> n >> u;
+    for(int i = 1; i <= n; i++) {
+        for(int j = 1; j <= n; j++) {
+            f1 >> a[i][j];
+            if(a[i][j]) adj[i].push_back(j);
+        }
+    }
+    if(t == 1) {
+        dfstree(u);
+    }
+    if(t == 2) {
+        bfstree(u);
+    }
+    if(ans.size() != n - 1) {
+        f2 << 0;
+        return 0;
+    }
+    f2 << n - 1 << endl;
+    for(auto x : ans) {
+        int a = x.first;
+        int b = x.second;
+        if(a > b) swap(a, b);
+        f2 << a << " " << b << endl;
+    }
+    return 0;
+}
